@@ -7,30 +7,27 @@ namespace Todo.Tests.CommandTests
     [TestClass]
     public class CreateTodoCommandTests
     {
+        private readonly CreateTodoCommand _invalidCommand = new CreateTodoCommand("", "", DateTime.UtcNow);
+        private readonly CreateTodoCommand _validCommand = new CreateTodoCommand("This is a valid Title", "UserValid", DateTime.UtcNow);
+
         [TestMethod]
         public void Dado_um_comando_invalido()
         {
-            // Arrange
-            var command = new CreateTodoCommand("", "", DateTime.UtcNow);
-
             // Act
-            command.Validate();
+            _invalidCommand.Validate();
 
             // Assert
-            Assert.AreEqual(command.Valid, false);
+            Assert.AreEqual(_invalidCommand.Valid, false);
         }
 
         [TestMethod]
         public void Dado_um_comando_valido()
         {
-            // Arrange
-            var command = new CreateTodoCommand("This is a valid Title", "UserValid", DateTime.UtcNow);
-
             // Act
-            command.Validate();
+            _validCommand.Validate();
 
             // Assert
-            Assert.AreEqual(command.Valid, true);
+            Assert.AreEqual(_validCommand.Valid, true);
         }
     }
 }

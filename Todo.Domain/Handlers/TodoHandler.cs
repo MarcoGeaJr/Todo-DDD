@@ -42,7 +42,8 @@ namespace Todo.Domain.Handlers
             if (command.Invalid)
                 return new GenericCommandResult(false, "Modelo inválido.", command.Notifications);
 
-            // Recupera a todo do banco (Rehidratação)
+            // Recupera a todo do banco (Reidratação)
+            // Reidratação: buscar os dados mais frescos do banco, pois os dados da tela podem estar desatualizados
             var todoItem = await _todoRepostiory.GetByIdAsync(command.Id, command.User);
 
             // Altera o titulo

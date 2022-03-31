@@ -1,10 +1,13 @@
-﻿using Todo.Domain.Entities;
+﻿using System;
+using System.Threading.Tasks;
+using Todo.Domain.Entities;
 
 namespace Todo.Domain.Repositories
 {
     public interface ITodoRepository
     {
-        void Create(TodoItem todo);
-        void Upadate(TodoItem todo);
+        Task<TodoItem> GetByIdAsync(Guid id, string user);
+        Task Create(TodoItem todo);
+        Task Upadate(TodoItem todo);
     }
 }

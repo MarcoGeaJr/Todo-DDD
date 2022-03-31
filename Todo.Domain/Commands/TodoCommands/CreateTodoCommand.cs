@@ -1,4 +1,5 @@
 ﻿using Flunt.Notifications;
+using Flunt.Validations;
 using System;
 using Todo.Shared.Contracts;
 
@@ -21,10 +22,12 @@ namespace Todo.Domain.Commands.TodoCommands
 
         public void Validate()
         {
-            if (Title.Length < 4)
-            {
-                AddNotification("Titulo", "O titulo não pode ser menor que 4");
-            }
+            AddNotifications(
+                new Contract()
+                    .Requires()
+                    .HasMinLen(Title, 3, "Title", "Descreva melhor á tarefa!")
+                    .HasMinLen(User, 6, "User", "Usuário inválido.")
+                );
         }
     }
 }

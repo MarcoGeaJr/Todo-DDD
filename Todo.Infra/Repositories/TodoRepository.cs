@@ -51,7 +51,7 @@ namespace Todo.Infra.Repositories
 
         public async Task<TodoItem> GetByIdAsync(Guid id, string user)
         {
-            return await _context.Todos.FirstOrDefaultAsync(x => x.Id == id && x.User == user);
+            return await _context.Todos.FirstOrDefaultAsync(TodoQueries.GetById(id, user));
         }
 
         public async Task<IEnumerable<TodoItem>> GetByPeriod(string user, DateTime time, bool done)

@@ -1,51 +1,71 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Todo.Domain.Entities;
+using Todo.Domain.Queries;
 using Todo.Domain.Repositories;
+using Todo.Infra.Contexts;
 
 namespace Todo.Infra.Repositories
 {
     public class TodoRepository : ITodoRepository
     {
-        public Task Create(TodoItem todo)
+        private readonly TodoContext _context;
+
+        public TodoRepository(TodoContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<IEnumerable<TodoItem>> GetAll(string user)
+        public async Task Create(TodoItem todo)
         {
-            throw new NotImplementedException();
+            await _context.Todos.AddAsync(todo);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<TodoItem>> GetAllDone(string user)
+        public async Task<IEnumerable<TodoItem>> GetAll(string user)
         {
-            throw new NotImplementedException();
+            return _context.Todos
+                            .AsNoTracking()
+                            .Where(TodoQueries.GetAll(user))
+                            .OrderBy(x => x.Date);
         }
 
-        public Task<IEnumerable<TodoItem>> GetAllUnDone(string user)
+        public async Task<IEnumerable<TodoItem>> GetAllDone(string user)
         {
-            throw new NotImplementedException();
+            return _context.Todos
+                            .AsNoTracking()
+                            .Where(TodoQueries.GetAllDone(user))
+                            .OrderBy(x => x.Date);
         }
 
-        public Task<TodoItem> GetById(Guid id, string user)
+        public async Task<IEnumerable<TodoItem>> GetAllUnDone(string user)
         {
-            throw new NotImplementedException();
+            return _context.Todos
+                            .AsNoTracking()
+                            .Where(TodoQueries.GetAllUnDone(user))
+                            .OrderBy(x => x.Date);
         }
 
-        public Task<TodoItem> GetByIdAsync(Guid id, string user)
+        public async Task<TodoItem> GetByIdAsync(Guid id, string user)
         {
-            throw new NotImplementedException();
+            return await _context.Todos.FirstOrDefaultAsync(x => x.Id == id && x.User == user);
         }
 
-        public Task<IEnumerable<TodoItem>> GetByPeriod(string user)
+        public async Task<IEnumerable<TodoItem>> GetByPeriod(string user, DateTime time, bool done)
         {
-            throw new NotImplementedException();
+            return _context.Todos
+                           .AsNoTracking()
+                           .Where(TodoQueries.GetByPeriod(user, time, done))
+                           .OrderBy(x => x.Date);
         }
 
-        public Task Upadate(TodoItem todo)
+        public async Task Upadate(TodoItem todo)
         {
-            throw new NotImplementedException();
+            _context.Entry(todo).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

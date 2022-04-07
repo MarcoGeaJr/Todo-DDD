@@ -10,10 +10,9 @@ namespace Todo.Domain.Repositories
         Task<TodoItem> GetByIdAsync(Guid id, string user);
         Task Create(TodoItem todo);
         Task Upadate(TodoItem todo);
-        Task<TodoItem> GetById(Guid id, string user);
         Task<IEnumerable<TodoItem>> GetAll(string user);
         Task<IEnumerable<TodoItem>> GetAllDone(string user);
         Task<IEnumerable<TodoItem>> GetAllUnDone(string user);
-        Task<IEnumerable<TodoItem>> GetByPeriod(string user);
+        Task<IEnumerable<TodoItem>> GetByPeriod(string user, DateTime time, bool done);
     }
 }

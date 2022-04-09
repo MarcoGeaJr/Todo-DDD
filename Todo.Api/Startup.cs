@@ -30,8 +30,8 @@ namespace Todo.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo Api", Version = "v1" });
             });
 
-            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("Database"));
-            //services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings:DefaultConnection")));
+            //services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("Database"));
+            services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString")));
 
             services.AddTransient<ITodoRepository, TodoRepository>();
             services.AddTransient<TodoHandler, TodoHandler>();

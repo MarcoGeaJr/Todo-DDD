@@ -26,7 +26,7 @@ namespace Todo.Domain.Commands.TodoCommands
                 new Contract()
                     .Requires()
                     .HasMinLen(Title, 3, "Title", "Descreva melhor á tarefa!")
-                    .HasMinLen(User, 6, "User", "Usuário inválido.")
+                    .HasMinLen(User, 4, "User", "Usuário inválido.")
                 );
         }
     }

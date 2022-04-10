@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Todo.Domain.Commands.TodoCommands;
 using Todo.Domain.Handlers;
@@ -10,6 +12,7 @@ namespace Todo.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TodoController : ControllerBase
     {
         private readonly TodoHandler _todoHandler;
@@ -21,12 +24,17 @@ namespace Todo.Api.Controllers
             _todoRepository = todoRepository;
         }
 
+        private string GetUserClaimUserId()
+        {
+            return User.Claims.FirstOrDefault(x => x.Type == "user_id")?.Value;
+        }
+
         [HttpGet("")]
         public async Task<ActionResult<GenericCommandResult>> GetAll()
         {
             try
             {
-                return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.", await _todoRepository.GetAll("user")));
+                return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.", await _todoRepository.GetAll(GetUserClaimUserId())));
             }
             catch (Exception ex)
             {
@@ -39,7 +47,7 @@ namespace Todo.Api.Controllers
         {
             try
             {
-                return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.", await _todoRepository.GetAllDone("user")));
+                return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.", await _todoRepository.GetAllDone(GetUserClaimUserId())));
             }
             catch (Exception ex)
             {
@@ -52,7 +60,7 @@ namespace Todo.Api.Controllers
         {
             try
             {
-                return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.", await _todoRepository.GetAllUnDone("user")));
+                return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.", await _todoRepository.GetAllUnDone(GetUserClaimUserId())));
             }
             catch (Exception ex)
             {
@@ -66,7 +74,7 @@ namespace Todo.Api.Controllers
             try
             {
                 return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.",
-                    await _todoRepository.GetByPeriod("user", DateTime.Now.Date, true)));
+                    await _todoRepository.GetByPeriod(GetUserClaimUserId(), DateTime.Now.Date, true)));
             }
             catch (Exception ex)
             {
@@ -80,7 +88,7 @@ namespace Todo.Api.Controllers
             try
             {
                 return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.",
-                    await _todoRepository.GetByPeriod("user", DateTime.Now.Date, false)));
+                    await _todoRepository.GetByPeriod(GetUserClaimUserId(), DateTime.Now.Date, false)));
             }
             catch (Exception ex)
             {
@@ -94,7 +102,7 @@ namespace Todo.Api.Controllers
             try
             {
                 return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.",
-                    await _todoRepository.GetByPeriod("user", DateTime.Now.Date.AddDays(1), true)));
+                    await _todoRepository.GetByPeriod(GetUserClaimUserId(), DateTime.Now.Date.AddDays(1), true)));
             }
             catch (Exception ex)
             {
@@ -108,7 +116,7 @@ namespace Todo.Api.Controllers
             try
             {
                 return Ok(new GenericCommandResult(true, "Pesquisa concluida com suscesso.",
-                    await _todoRepository.GetByPeriod("user", DateTime.Now.Date.AddDays(1), false)));
+                    await _todoRepository.GetByPeriod(GetUserClaimUserId(), DateTime.Now.Date.AddDays(1), false)));
             }
             catch (Exception ex)
             {
@@ -121,7 +129,7 @@ namespace Todo.Api.Controllers
         {
             try
             {
-                command.User = "user";
+                command.User = GetUserClaimUserId();
                 return Ok(await _todoHandler.Handle(command));
             }
             catch (Exception ex)
@@ -135,7 +143,7 @@ namespace Todo.Api.Controllers
         {
             try
             {
-                command.User = "user";
+                command.User = GetUserClaimUserId();
                 return Ok(await _todoHandler.Handle(command));
             }
             catch (Exception ex)
@@ -149,7 +157,7 @@ namespace Todo.Api.Controllers
         {
             try
             {
-                command.User = "user";
+                command.User = GetUserClaimUserId();
                 return Ok(await _todoHandler.Handle(command));
             }
             catch (Exception ex)
@@ -163,7 +171,7 @@ namespace Todo.Api.Controllers
         {
             try
             {
-                command.User = "user";
+                command.User = GetUserClaimUserId();
                 return Ok(await _todoHandler.Handle(command));
             }
             catch (Exception ex)
